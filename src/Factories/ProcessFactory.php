@@ -15,18 +15,12 @@ class ProcessFactory
      */
     public function createProcess(\SplFileInfo $file): Process
     {
-        $pathToBinary = config('media-info.path-to-binary');
-
-        if (!file_exists($pathToBinary)) {
-            throw new \InvalidArgumentException(sprintf('"%s" not exists', $pathToBinary));
-        }
-
         $tempDir = storage_path('tempdir' . DIRECTORY_SEPARATOR . 'media-info');
-
         if (!is_dir($tempDir) && !mkdir($tempDir, 0777, true)) {
             throw new \RuntimeException(sprintf('Unable to create temp dir at "%s"', $tempDir));
         }
 
+        $pathToBinary = config('media-info.path-to-binary');
         $process = new Process(sprintf('%s %s --fullscan', $pathToBinary, $file->getRealPath()));
 
         $process->setWorkingDirectory($tempDir);
